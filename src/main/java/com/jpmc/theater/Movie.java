@@ -1,5 +1,8 @@
 package com.jpmc.theater;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.time.Duration;
 import java.util.Objects;
 
@@ -31,7 +34,7 @@ public class Movie {
         return ticketPrice;
     }
 
-    public double calculateTicketPrice(Showing showing) {
+    public double calculateTicketPrice(@NotNull Showing showing) {
         return ticketPrice - getDiscount(showing.getSequenceOfTheDay());
     }
 
@@ -57,7 +60,7 @@ public class Movie {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Movie movie = (Movie) o;

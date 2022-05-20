@@ -1,5 +1,7 @@
 package com.jpmc.theater;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -11,7 +13,7 @@ public class Theater {
     LocalDateProvider provider;
     private List<Showing> schedule;
 
-    public Theater(LocalDateProvider provider) {
+    public Theater(@NotNull LocalDateProvider provider) {
         this.provider = provider;
 
         Movie spiderMan = new Movie("Spider-Man: No Way Home", Duration.ofMinutes(90), 12.5, 1);
@@ -30,7 +32,7 @@ public class Theater {
         );
     }
 
-    public Reservation reserve(Customer customer, int sequence, int howManyTickets) {
+    public @NotNull Reservation reserve(Customer customer, int sequence, int howManyTickets) {
         Showing showing;
         try {
             showing = schedule.get(sequence - 1);
@@ -50,7 +52,7 @@ public class Theater {
         System.out.println("===================================================");
     }
 
-    public String humanReadableFormat(Duration duration) {
+    public String humanReadableFormat(@NotNull Duration duration) {
         long hour = duration.toHours();
         long remainingMin = duration.toMinutes() - TimeUnit.HOURS.toMinutes(duration.toHours());
 
@@ -58,7 +60,7 @@ public class Theater {
     }
 
     // (s) postfix should be added to handle plural correctly
-    private String handlePlural(long value) {
+    private @NotNull String handlePlural(long value) {
         if (value == 1) {
             return "";
         }

@@ -1,5 +1,6 @@
 package com.jpmc.theater;
 
+import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public class Customer {
@@ -33,7 +34,7 @@ public class Customer {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "name: " + name;
     }
 }
