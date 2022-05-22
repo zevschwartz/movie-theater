@@ -26,7 +26,7 @@ public class Showing {
     }
 
     public double getMovieFee() {
-        return movie.getTicketPrice();
+        return movie.ticketPrice();
     }
 
     public int getSequenceOfTheDay() {
