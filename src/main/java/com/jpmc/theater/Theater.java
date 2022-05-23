@@ -3,6 +3,7 @@ package com.jpmc.theater;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 record Theater(List<Showing> schedule, @NotNull List<DiscountRule> discountRules) {
 
@@ -11,7 +12,7 @@ record Theater(List<Showing> schedule, @NotNull List<DiscountRule> discountRules
     }
 
     public double calculateTicketPriceForShowing(int sequenceInDay) {
-        if(sequenceInDay < 0 || sequenceInDay > schedule.size()) {
+        if (sequenceInDay < 0 || sequenceInDay > schedule.size()) {
             throw new IllegalArgumentException("Invalid range sequence");
         }
 
@@ -22,7 +23,7 @@ record Theater(List<Showing> schedule, @NotNull List<DiscountRule> discountRules
                 .max()
                 .orElse(0.0);
 
-        return showing.getMovieFee() - discount;
+        return showing.movie().ticketPrice() - discount;
     }
 
 
@@ -37,6 +38,25 @@ record Theater(List<Showing> schedule, @NotNull List<DiscountRule> discountRules
         return new Reservation(customer, showing, howManyTickets);
     }
 
+    public double getPriceForReservation(@NotNull Reservation reservation) {
+        var reservedShowing = reservation.showing();
+        var showingSequence = findSequenceForShowing(reservedShowing);
 
+        return calculateTicketPriceForShowing(showingSequence) * reservation.audienceCount();
+    }
+
+    private int findSequenceForShowing(@NotNull Showing reservedShowing) {
+        return IntStream.range(0, schedule.size())
+                .boxed()
+                .filter(index -> {
+                    var scheduledShowing = schedule.get(index);
+                    return scheduledShowing.equals(reservedShowing);
+                })
+                .findFirst()
+                .map(index -> index + 1)
+                .orElseThrow(() ->
+                        new IllegalStateException("invalid showing in this reservation")
+                );
+    }
 
 }

@@ -25,7 +25,7 @@ record SpecialMovieDiscountRule(int percentOff) implements DiscountRule {
     public double calculateTotalDiscount(@NotNull Showing showing, int sequenceInDay) {
         double decimalFromPercent = percentOff / 100.0;
 
-        return showing.movie().specialCode() == MOVIE_CODE_SPECIAL ? showing.getMovieFee() * decimalFromPercent : 0;
+        return showing.movie().specialCode() == MOVIE_CODE_SPECIAL ? showing.movie().ticketPrice() * decimalFromPercent : 0;
     }
 }
 

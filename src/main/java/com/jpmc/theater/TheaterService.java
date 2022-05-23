@@ -54,7 +54,7 @@ public class TheaterService {
                     .append(": ").append(showing.showStartTime())
                     .append(" ").append(showing.movie().title())
                     .append(" ").append(humanReadableFormat(showing.movie().runningTime()))
-                    .append(" $").append(showing.getMovieFee())
+                    .append(" $").append(showing.movie().ticketPrice())
                     .append(LINE_SEPARATOR);
         });
         builder.append("===================================================")

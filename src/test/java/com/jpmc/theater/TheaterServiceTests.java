@@ -20,7 +20,7 @@ public class TheaterServiceTests {
 
         Reservation reservation = theater.reserve(john, 2, 4);
 //        System.out.println("You have to pay " + reservation.getTotalFee());
-        assertEquals(reservation.totalFee(), 50);
+        assertEquals(theater.getPriceForReservation(reservation), 50);
     }
 
     @Test
