@@ -5,12 +5,16 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 public class CurrentDateProviderImplTests {
     @Test
     void shouldReturnCorrectDate() {
-        Assertions.assertEquals(LocalDate.now(),
-                CurrentDateProviderImpl.getInstance().currentDate(),
-                "Current date should be accurate");
+        LocalDate expectedDate = LocalDate.now();
+        LocalDate currentDateFromSubject = CurrentDateProviderImpl.getInstance().currentDate();
+
+        assertEquals(expectedDate, currentDateFromSubject, "Current date should be accurate");
     }
 
     @Test
@@ -18,6 +22,6 @@ public class CurrentDateProviderImplTests {
         var instance1 = CurrentDateProviderImpl.getInstance();
         var instance2 = CurrentDateProviderImpl.getInstance();
 
-        Assertions.assertSame(instance1, instance2, "singleton should always return the same instance");
+        assertSame(instance1, instance2, "singleton should always return the same instance");
     }
 }

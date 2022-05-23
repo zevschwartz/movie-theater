@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.stream.IntStream;
 
-record Theater(List<Showing> schedule, @NotNull List<DiscountRule> discountRules) {
+record Theater(@NotNull List<@NotNull Showing> schedule, @NotNull List<@NotNull DiscountRule> discountRules) {
 
     Theater(List<Showing> schedule) {
         this(schedule, List.of());
@@ -28,13 +28,12 @@ record Theater(List<Showing> schedule, @NotNull List<DiscountRule> discountRules
 
 
     public @NotNull Reservation reserve(@NotNull Customer customer, int sequence, int howManyTickets) {
-        Showing showing;
-        try {
-            showing = schedule.get(sequence - 1);
-        } catch (RuntimeException ex) {
-            ex.printStackTrace();
+        if(sequence < 1 || sequence > schedule.size()){
             throw new IllegalStateException("not able to find any showing for given sequence " + sequence);
         }
+
+        @NotNull Showing showing = schedule.get(sequence - 1);
+
         return new Reservation(customer, showing, howManyTickets);
     }
 

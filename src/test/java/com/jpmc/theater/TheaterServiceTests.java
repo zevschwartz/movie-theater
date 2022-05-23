@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TheaterServiceTests {
 
-
     final TheaterService theaterService = new TheaterService(() -> LocalDate.of(2022, Month.MAY, 22));
 
     @Test
