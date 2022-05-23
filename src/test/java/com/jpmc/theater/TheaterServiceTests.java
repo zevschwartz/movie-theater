@@ -2,16 +2,18 @@ package com.jpmc.theater;
 
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
-import java.time.Month;
+import java.time.*;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TheaterServiceTests {
+
+    TheaterService theaterService = new TheaterService(() -> LocalDate.of(2022, Month.MAY, 22));
+
     @Test
     void shouldGetCorrectReservationWhenTheaterSetupCorrectly() {
-        var theaterService = new TheaterService(() -> LocalDate.of(2022, Month.MAY, 22));
-        var theater = new Theater(theaterService.generateMovieData());
+        var theater = new Theater(theaterService.getShowings());
 
         Customer john = new Customer("id-12345", "John Doe");
 
@@ -23,7 +25,7 @@ public class TheaterServiceTests {
     @Test
     void shouldGetPrettyScheduleWhenRequested() {
         var theaterService = new TheaterService(() -> LocalDate.of(2022, Month.MAY, 22));
-        var theater = new Theater(theaterService.generateMovieData());
+        var theater = new Theater(theaterService.getShowings());
 
         var expected = """
                 2022-05-22
@@ -41,5 +43,17 @@ public class TheaterServiceTests {
                 """;
 
         assertEquals(expected, theaterService.getScheduleFormatted(theater), "theaterService should return correct string");
+    }
+
+    @Test
+    void specialMovieWith20PercentDiscount() {
+        Movie spiderMan = new Movie("Spider-Man: No Way Home", Duration.ofMinutes(90),12.5, 1);
+        Showing showing = new Showing(spiderMan, 5, LocalDateTime.of(LocalDate.now(), LocalTime.now()));
+
+        Theater theater = new Theater(List.of(showing), theaterService.getDiscountRules());
+
+        assertEquals(10, theater.calculateTicketPriceForShowing(1));
+
+        System.out.println(Duration.ofMinutes(90));
     }
 }

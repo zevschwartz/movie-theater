@@ -6,7 +6,7 @@ public class Application {
         var currentDateProvider = CurrentDateProviderImpl.getInstance();
         TheaterService theaterService = new TheaterService(currentDateProvider);
 
-        Theater theater = new Theater(theaterService.generateMovieData());
+        Theater theater = new Theater(theaterService.getShowings());
         System.out.println(theaterService.getScheduleFormatted(theater));
     }
 

@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 
 public class TheaterService {
 
@@ -20,7 +21,7 @@ public class TheaterService {
         this.currentDateProvider = currentDateProvider;
     }
 
-    public @NotNull List<Showing> generateMovieData() {
+    public @NotNull List<Showing> getShowings() {
         Movie spiderMan = new Movie("Spider-Man: No Way Home", Duration.ofMinutes(90), 12.5, 1);
         Movie turningRed = new Movie("Turning Red", Duration.ofMinutes(85), 11, 0);
         Movie theBatMan = new Movie("The Batman", Duration.ofMinutes(95), 9, 0);
@@ -35,6 +36,10 @@ public class TheaterService {
                 new Showing(spiderMan, 8, LocalDateTime.of(currentDateProvider.currentDate(), LocalTime.of(21, 10))),
                 new Showing(theBatMan, 9, LocalDateTime.of(currentDateProvider.currentDate(), LocalTime.of(23, 0)))
         );
+    }
+
+    public @NotNull List<DiscountRule> getDiscountRules() {
+        return List.of(new SpecialMovieDiscountRule(20), new SequenceDiscountRule(3, 2));
     }
 
 
