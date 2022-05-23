@@ -7,20 +7,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TheaterServiceTests {
+public class TheaterServiceTest {
 
     final TheaterService theaterService = new TheaterService(() -> LocalDate.of(2022, Month.MAY, 22));
-
-    @Test
-    void shouldGetCorrectReservationWhenTheaterSetupCorrectly() {
-        var theater = new Theater(theaterService.getShowings());
-
-        Customer john = new Customer("id-12345", "John Doe");
-
-        Reservation reservation = theater.reserve(john, 2, 4);
-//        System.out.println("You have to pay " + reservation.getTotalFee());
-        assertEquals(theater.getPriceForReservation(reservation), 50);
-    }
 
     @Test
     void shouldGetPrettyScheduleWhenRequested() {
