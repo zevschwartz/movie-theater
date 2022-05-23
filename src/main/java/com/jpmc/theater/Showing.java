@@ -1,11 +1,9 @@
 package com.jpmc.theater;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.time.LocalDateTime;
 
 
-record Showing(Movie movie, int sequenceOfTheDay, LocalDateTime showStartTime) {
+record Showing(Movie movie, LocalDateTime showStartTime) {
 
     public double getMovieFee() {
         return movie.ticketPrice();

@@ -20,7 +20,7 @@ record SpecialMovieDiscountRule(int percentOff) implements DiscountRule {
 
     @Override
     public double calculateTotalDiscount(Showing showing, int sequenceInDay) {
-        var decimalFromPercent = percentOff / 100;
+        double decimalFromPercent = percentOff / 100.0;
 
         return showing.movie().specialCode() == MOVIE_CODE_SPECIAL ? showing.getMovieFee() * decimalFromPercent : 0;
     }
