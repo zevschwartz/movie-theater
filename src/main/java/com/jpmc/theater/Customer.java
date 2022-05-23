@@ -1,4 +1,6 @@
 package com.jpmc.theater;
 
-record Customer(String id, String name) {
+import org.jetbrains.annotations.NotNull;
+
+record Customer(@NotNull String id, @NotNull String name) {
 }

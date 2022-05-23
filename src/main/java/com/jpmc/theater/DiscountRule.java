@@ -1,5 +1,8 @@
 package com.jpmc.theater;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,7 +22,7 @@ record SpecialMovieDiscountRule(int percentOff) implements DiscountRule {
     }
 
     @Override
-    public double calculateTotalDiscount(Showing showing, int sequenceInDay) {
+    public double calculateTotalDiscount(@NotNull Showing showing, int sequenceInDay) {
         double decimalFromPercent = percentOff / 100.0;
 
         return showing.movie().specialCode() == MOVIE_CODE_SPECIAL ? showing.getMovieFee() * decimalFromPercent : 0;
@@ -27,7 +30,7 @@ record SpecialMovieDiscountRule(int percentOff) implements DiscountRule {
 }
 
 
-record SequenceDiscountRule(List<Integer> dollarsOff) implements DiscountRule {
+record SequenceDiscountRule(@NotNull List<Integer> dollarsOff) implements DiscountRule {
     SequenceDiscountRule(Integer... dollarsOff) {
         this(Arrays.asList(dollarsOff));
     }
