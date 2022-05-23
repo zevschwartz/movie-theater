@@ -20,7 +20,9 @@ public class TheaterTest {
     void shouldGetFinalPriceWhenCalculatingPriceWithValidSequence(int sequence, double expectedPrice) {
         var theater = generateTheaterWithScheduleAndDiscounts();
 
-        Assertions.assertEquals(expectedPrice, theater.calculateTicketPriceForShowing(sequence));
+        assertEquals(expectedPrice,
+                theater.calculateTicketPriceForShowing(sequence),
+                "Showing fee should calculate correctly");
     }
 
     @Test
@@ -32,7 +34,9 @@ public class TheaterTest {
                         (showing, sequenceInDay) -> sequenceInDay == 1 ? 3 : 0
                 ));
 
-        Assertions.assertEquals(42.0, theater.calculateTicketPriceForShowing(1));
+        assertEquals(42.0,
+                theater.calculateTicketPriceForShowing(1),
+                "only largest discount should be used");
     }
 
 
@@ -43,7 +47,7 @@ public class TheaterTest {
 
         Assertions.assertThrows(IllegalStateException.class,
                 () -> theater.calculateTicketPriceForShowing(invalidSequence),
-                "not able to find any showing for given sequence ");
+                "not able to find any showing for given sequence");
     }
 
     @ParameterizedTest
@@ -59,7 +63,6 @@ public class TheaterTest {
 
     }
 
-
     @Test
     void shouldGetCorrectPriceForReservation() {
         var customer = new Customer("unused-id", "John Doe");
@@ -71,7 +74,9 @@ public class TheaterTest {
 
         var subject = new Theater(List.of(showing), List.of());
 
-        Assertions.assertEquals(37.5, subject.calculateTicketPriceForReservation(reservation), "Reservation fee should calculate correctly");
+        assertEquals(37.5,
+                subject.calculateTicketPriceForReservation(reservation),
+                "Reservation fee should calculate correctly");
     }
 
     @Test
@@ -86,7 +91,9 @@ public class TheaterTest {
         assertEquals(4, reservation.audienceCount());
 
         double expectedPrice = 4 * 72.0;
-        assertEquals(expectedPrice, theater.calculateTicketPriceForReservation(reservation));
+        assertEquals(expectedPrice,
+                theater.calculateTicketPriceForReservation(reservation),
+                "price for reservation is not correct");
     }
 
     private Theater generateTheaterWithScheduleAndDiscounts() {

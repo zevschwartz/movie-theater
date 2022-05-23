@@ -1,8 +1,8 @@
 package com.jpmc.theater;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,27 +12,40 @@ public interface DiscountRule {
 }
 
 
-record SpecialMovieDiscountRule(int percentOff) implements DiscountRule {
-    private final static int MOVIE_CODE_SPECIAL = 1;
+class SpecialMoviePercentDiscountRule implements DiscountRule {
+    private final int specialMovieCode;
+    private final int percentOff;
 
-    SpecialMovieDiscountRule {
+    public SpecialMoviePercentDiscountRule(int specialMovieCode, int percentOff) {
         if (percentOff < 0 || percentOff > 100) {
             throw new IllegalStateException("percent off must be between 0 and 100");
         }
+        this.percentOff = percentOff;
+        this.specialMovieCode = specialMovieCode;
     }
 
     @Override
     public double calculateTotalDiscount(@NotNull Showing showing, int sequenceInDay) {
         double decimalFromPercent = percentOff / 100.0;
 
-        return showing.movie().specialCode() == MOVIE_CODE_SPECIAL ? showing.movie().ticketPrice() * decimalFromPercent : 0;
+        return showing.movie().specialCode() == specialMovieCode ? showing.movie().ticketPrice() * decimalFromPercent : 0;
     }
 }
 
 
-record SequenceDiscountRule(@NotNull List<Integer> dollarsOff) implements DiscountRule {
-    SequenceDiscountRule(Integer... dollarsOff) {
-        this(Arrays.asList(dollarsOff));
+class SequenceDiscountRule implements DiscountRule {
+    private final @NotNull List<@NotNull Integer> dollarsOff;
+
+    public SequenceDiscountRule(@NotNull List<@NotNull Integer> dollarsOff) {
+        this.dollarsOff = dollarsOff;
+    }
+
+    public SequenceDiscountRule(Integer first, Integer... rest) {
+        List<Integer> list = new ArrayList<>(rest.length + 1);
+        list.add(first);
+        list.addAll(Arrays.asList(rest));
+
+        this.dollarsOff = List.copyOf(list);
     }
 
     @Override

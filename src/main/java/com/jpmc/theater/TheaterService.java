@@ -39,7 +39,7 @@ public class TheaterService {
     }
 
     public @NotNull List<DiscountRule> getDiscountRules() {
-        return List.of(new SpecialMovieDiscountRule(20), new SequenceDiscountRule(3, 2));
+        return List.of(new SpecialMoviePercentDiscountRule(1,20), new SequenceDiscountRule(3, 2));
     }
 
 
