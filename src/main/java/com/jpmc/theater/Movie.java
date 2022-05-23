@@ -1,10 +1,8 @@
 package com.jpmc.theater;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
-import java.util.Objects;
 
 
 record Movie(@NotNull String title, String description, @NotNull Duration runningTime, double ticketPrice,
@@ -16,7 +14,7 @@ record Movie(@NotNull String title, String description, @NotNull Duration runnin
     }
 
     public double calculateTicketPrice(@NotNull Showing showing) {
-        return ticketPrice - getDiscount(showing.getSequenceOfTheDay());
+        return ticketPrice - getDiscount(showing.sequenceOfTheDay());
     }
 
     private double getDiscount(int showSequence) {

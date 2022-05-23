@@ -12,10 +12,6 @@ record Showing(Movie movie, int sequenceOfTheDay, LocalDateTime showStartTime) {
         return movie.ticketPrice();
     }
 
-    public int getSequenceOfTheDay() {
-        return sequenceOfTheDay;
-    }
-
     private double calculateFee(int audienceCount) {
         return movie.calculateTicketPrice(this) * audienceCount;
     }

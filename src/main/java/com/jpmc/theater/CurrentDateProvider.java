@@ -6,10 +6,15 @@ import org.jetbrains.annotations.Nullable;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class LocalDateProvider implements Serializable {
-    private static @Nullable volatile LocalDateProvider instance = null;
+@FunctionalInterface
+public interface CurrentDateProvider {
+    LocalDate currentDate();
+}
 
-    private LocalDateProvider() {
+class CurrentDateProviderImpl implements Serializable, CurrentDateProvider {
+    private static @Nullable volatile CurrentDateProviderImpl instance = null;
+
+    private CurrentDateProviderImpl() {
         if (instance != null) {
             throw new IllegalStateException("instance cannot be instantiated with null instance");
         }
@@ -18,22 +23,23 @@ public class LocalDateProvider implements Serializable {
     /**
      * @return make sure to return singleton instance
      */
-    public static @NotNull LocalDateProvider getInstance() {
+    public static @NotNull CurrentDateProviderImpl getInstance() {
         if (instance == null) {
-            synchronized (LocalDateProvider.class) {
+            synchronized (CurrentDateProviderImpl.class) {
                 if (instance == null) {
-                    instance = new LocalDateProvider();
+                    instance = new CurrentDateProviderImpl();
                 }
             }
         }
         return instance;
     }
 
+    @Override
     public @NotNull LocalDate currentDate() {
         return LocalDate.now();
     }
 
-    protected @NotNull LocalDateProvider readResolve() {
+    protected @NotNull CurrentDateProviderImpl readResolve() {
         return getInstance();
     }
 

@@ -2,12 +2,15 @@ package com.jpmc.theater;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+import java.time.Month;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TheaterServiceTests {
     @Test
     void shouldGetCorrectReservationWhenTheaterSetupCorrectly() {
-        var theaterService = new TheaterService(LocalDateProvider.getInstance());
+        var theaterService = new TheaterService(() -> LocalDate.of(2022, Month.MAY, 22));
         var theater = new Theater(theaterService.generateMovieData());
 
         Customer john = new Customer("id-12345", "John Doe");
@@ -19,7 +22,7 @@ public class TheaterServiceTests {
 
     @Test
     void shouldGetPrettyScheduleWhenRequested() {
-        var theaterService = new TheaterService(LocalDateProvider.getInstance());
+        var theaterService = new TheaterService(() -> LocalDate.of(2022, Month.MAY, 22));
         var theater = new Theater(theaterService.generateMovieData());
 
         var expected = """
