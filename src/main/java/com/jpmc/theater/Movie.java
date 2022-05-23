@@ -11,7 +11,7 @@ record Movie(@NotNull String title, String description, @NotNull Duration runnin
              int specialCode) {
     private final static int MOVIE_CODE_SPECIAL = 1;
 
-    public Movie(String title, Duration runningTime, double ticketPrice, int specialCode) {
+    public Movie(@NotNull String title, @NotNull Duration runningTime, double ticketPrice, int specialCode) {
         this(title, null, runningTime, ticketPrice, specialCode);
     }
 

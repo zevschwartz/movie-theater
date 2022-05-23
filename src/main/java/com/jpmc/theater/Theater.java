@@ -6,7 +6,7 @@ import java.util.List;
 
 record Theater(List<Showing> schedule) {
 
-    public @NotNull Reservation reserve(Customer customer, int sequence, int howManyTickets) {
+    public @NotNull Reservation reserve(@NotNull Customer customer, int sequence, int howManyTickets) {
         Showing showing;
         try {
             showing = schedule.get(sequence - 1);

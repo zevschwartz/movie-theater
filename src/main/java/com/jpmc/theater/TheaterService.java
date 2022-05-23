@@ -20,7 +20,7 @@ public class TheaterService {
         this.localDateProvider = localDatelocalDateProvider;
     }
 
-    public List<Showing> generateMovieData() {
+    public @NotNull List<Showing> generateMovieData() {
         Movie spiderMan = new Movie("Spider-Man: No Way Home", Duration.ofMinutes(90), 12.5, 1);
         Movie turningRed = new Movie("Turning Red", Duration.ofMinutes(85), 11, 0);
         Movie theBatMan = new Movie("The Batman", Duration.ofMinutes(95), 9, 0);
@@ -38,7 +38,7 @@ public class TheaterService {
     }
 
 
-    public String getScheduleFormatted(Theater theater) {
+    public @NotNull String getScheduleFormatted(@NotNull Theater theater) {
         StringBuilder builder = new StringBuilder()
                 .append(localDateProvider.currentDate()).append(LINE_SEPARATOR)
                 .append("===================================================").append(LINE_SEPARATOR);
