@@ -9,6 +9,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class TheaterService {
+
+    @NotNull
+    private static final String LINE_SEPARATOR =
+            System.getProperty("line.separator") != null ? System.getProperty("line.separator") : "\n";
+
     final LocalDateProvider localDateProvider;
 
     public TheaterService(LocalDateProvider localDatelocalDateProvider) {
@@ -33,13 +38,23 @@ public class TheaterService {
     }
 
 
-    public void printSchedule(Theater theater) {
-        System.out.println(localDateProvider.currentDate());
-        System.out.println("===================================================");
+    public String getScheduleFormatted(Theater theater) {
+        StringBuilder builder = new StringBuilder()
+                .append(localDateProvider.currentDate()).append(LINE_SEPARATOR)
+                .append("===================================================").append(LINE_SEPARATOR);
+
         theater.schedule().forEach(s ->
-                System.out.println(s.getSequenceOfTheDay() + ": " + s.showStartTime() + " " + s.movie().title() + " " + humanReadableFormat(s.movie().runningTime()) + " $" + s.getMovieFee())
+                builder.append(s.getSequenceOfTheDay())
+                        .append(": ").append(s.showStartTime())
+                        .append(" ").append(s.movie().title())
+                        .append(" ").append(humanReadableFormat(s.movie().runningTime()))
+                        .append(" $").append(s.getMovieFee())
+                        .append(LINE_SEPARATOR)
         );
-        System.out.println("===================================================");
+        builder.append("===================================================")
+                .append(LINE_SEPARATOR);
+
+        return builder.toString();
     }
 
     private @NotNull String humanReadableFormat(@NotNull Duration duration) {
@@ -53,8 +68,7 @@ public class TheaterService {
     private @NotNull String handlePlural(long value) {
         if (value == 1) {
             return "";
-        }
-        else {
+        } else {
             return "s";
         }
     }

@@ -7,7 +7,7 @@ public class Application {
         TheaterService theaterService = new TheaterService(localDateProvider);
 
         Theater theater = new Theater(theaterService.generateMovieData());
-        theaterService.printSchedule(theater);
+        System.out.println(theaterService.getScheduleFormatted(theater));
     }
 
 
