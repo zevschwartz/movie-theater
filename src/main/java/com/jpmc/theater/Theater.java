@@ -16,7 +16,7 @@ record Theater(@NotNull List<@NotNull Showing> schedule, @NotNull List<@NotNull 
             throw new IllegalArgumentException("Invalid range sequence");
         }
 
-        var showing = schedule.get(sequenceInDay - 1);
+        var showing = getShowingForSequence(sequenceInDay);
 
         var discount = discountRules.stream()
                 .mapToDouble(r -> r.calculateTotalDiscount(showing, sequenceInDay))
@@ -28,20 +28,27 @@ record Theater(@NotNull List<@NotNull Showing> schedule, @NotNull List<@NotNull 
 
 
     public @NotNull Reservation reserve(@NotNull Customer customer, int sequence, int howManyTickets) {
-        if(sequence < 1 || sequence > schedule.size()){
-            throw new IllegalStateException("not able to find any showing for given sequence " + sequence);
-        }
-
-        @NotNull Showing showing = schedule.get(sequence - 1);
+        Showing showing = getShowingForSequence(sequence);
 
         return new Reservation(customer, showing, howManyTickets);
     }
+
 
     public double getPriceForReservation(@NotNull Reservation reservation) {
         var reservedShowing = reservation.showing();
         var showingSequence = findSequenceForShowing(reservedShowing);
 
         return calculateTicketPriceForShowing(showingSequence) * reservation.audienceCount();
+    }
+
+    @NotNull
+    private Showing getShowingForSequence(int sequence) {
+        if(sequence < 1 || sequence > schedule.size()){
+            throw new IllegalStateException("not able to find any showing for given sequence " + sequence);
+        }
+
+        @NotNull Showing showing = schedule.get(sequence - 1);
+        return showing;
     }
 
     private int findSequenceForShowing(@NotNull Showing reservedShowing) {
