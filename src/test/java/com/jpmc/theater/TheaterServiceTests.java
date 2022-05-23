@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TheaterServiceTests {
     @Test
     void shouldGetCorrectReservationWhenTheaterSetupCorrectly() {
-        var theaterService = new TheaterService(LocalDateProvider.singleton());
+        var theaterService = new TheaterService(LocalDateProvider.getInstance());
         var theater = new Theater(theaterService.generateMovieData());
 
         Customer john = new Customer("id-12345", "John Doe");
@@ -19,7 +19,7 @@ public class TheaterServiceTests {
 
     @Test
     void shouldGetPrettyScheduleWhenRequested() {
-        var theaterService = new TheaterService(LocalDateProvider.singleton());
+        var theaterService = new TheaterService(LocalDateProvider.getInstance());
         var theater = new Theater(theaterService.generateMovieData());
 
         var expected = """
