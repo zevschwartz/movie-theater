@@ -1,7 +1,6 @@
 package com.jpmc.theater;
 
 public class Application {
-
     public static void main(String[] args) {
         var currentDateProvider = CurrentDateProviderImpl.getInstance();
         TheaterService theaterService = new TheaterService(currentDateProvider);
@@ -9,6 +8,4 @@ public class Application {
         Theater theater = new Theater(theaterService.getShowings());
         System.out.println(theaterService.getScheduleFormatted(theater));
     }
-
-
 }
