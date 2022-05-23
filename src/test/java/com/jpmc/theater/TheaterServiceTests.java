@@ -4,11 +4,14 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TheaterTests {
+public class TheaterServiceTests {
     @Test
     void totalFeeForCustomer() {
-        Theater theater = new Theater(LocalDateProvider.singleton());
+        var theaterService = new TheaterService(LocalDateProvider.singleton());
+        var theater = new Theater(theaterService.generateMovieData());
+
         Customer john = new Customer("id-12345", "John Doe");
+
         Reservation reservation = theater.reserve(john, 2, 4);
 //        System.out.println("You have to pay " + reservation.getTotalFee());
         assertEquals(reservation.totalFee(), 50);
@@ -16,7 +19,9 @@ public class TheaterTests {
 
     @Test
     void printMovieSchedule() {
-        Theater theater = new Theater(LocalDateProvider.singleton());
-        theater.printSchedule();
+        var theaterService = new TheaterService(LocalDateProvider.singleton());
+        var theater = new Theater(theaterService.generateMovieData());
+
+        theaterService.printSchedule(theater);
     }
 }
