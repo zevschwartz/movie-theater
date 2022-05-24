@@ -24,8 +24,6 @@ public class TheaterServiceImplTest {
             (showing, sequence) -> showing.showStartTime().getDayOfMonth() == 7,
             Discount.ofFixed(1));
 
-    final TheaterServiceImpl theaterService = new TheaterServiceImpl(() -> LocalDate.of(2022, Month.MAY, 22));
-
     @Test
     void shouldCalculateSeventhOfMonthMovieDiscountWhenMax() {
         Movie spiderMan = new Movie("Spider-Man: No Way Home", Duration.ofMinutes(90), 10, 0);

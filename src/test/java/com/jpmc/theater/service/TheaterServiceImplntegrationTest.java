@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class TheaterServiceImplntegrationTest {
 
     private final TheaterServiceImpl theaterService = new TheaterServiceImpl(CurrentDateProviderImpl.getInstance());
-    private final TheaterSchedule theaterSchedule = theaterService.getTheaterSchedule();
 
     @Nested
     @DisplayName("Pricing Rules on Reservations IT")

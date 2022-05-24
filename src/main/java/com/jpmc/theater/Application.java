@@ -3,8 +3,10 @@ package com.jpmc.theater;
 import com.jpmc.theater.json.DurationAdapter;
 import com.jpmc.theater.json.LocalDateAdapter;
 import com.jpmc.theater.json.LocalDateTimeAdapter;
-import com.jpmc.theater.model.Theater;
-import com.jpmc.theater.service.*;
+import com.jpmc.theater.service.CurrentDateProviderImpl;
+import com.jpmc.theater.service.TheaterSchedule;
+import com.jpmc.theater.service.TheaterService;
+import com.jpmc.theater.service.TheaterServiceImpl;
 import com.squareup.moshi.Moshi;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,12 +19,10 @@ class Application {
     private static final String LINE_SEPARATOR =
             System.getProperty("line.separator") != null ? System.getProperty("line.separator") : "\n";
 
-    private final @NotNull CurrentDateProvider currentDateProvider;
     private final @NotNull TheaterService theaterService;
     private final @NotNull Moshi moshi;
 
-    Application(@NotNull Moshi moshi, @NotNull CurrentDateProvider currentDateProvider, @NotNull TheaterService theaterService) {
-        this.currentDateProvider = currentDateProvider;
+    Application(@NotNull Moshi moshi, @NotNull TheaterService theaterService) {
         this.theaterService = theaterService;
         this.moshi = moshi;
     }
@@ -32,7 +32,7 @@ class Application {
         var theaterService = new TheaterServiceImpl(currentDateProvider);
         var moshi = getMoshi();
 
-        var application = new Application(moshi, currentDateProvider, theaterService);
+        var application = new Application(moshi, theaterService);
 
         System.out.println("\n\n=== string formatted version ===");
 
@@ -70,14 +70,12 @@ class Application {
                 .append(theaterSchedule.currentDate()).append(LINE_SEPARATOR)
                 .append("===================================================").append(LINE_SEPARATOR);
 
-        theaterSchedule.showDetails().forEach(showDetail -> {
-            builder.append(showDetail.index())
-                    .append(": ").append(showDetail.startTime())
-                    .append(" ").append(showDetail.title())
-                    .append(" ").append(humanReadableFormat(showDetail.runningTime()))
-                    .append(" $").append(showDetail.price())
-                    .append(LINE_SEPARATOR);
-        });
+        theaterSchedule.showDetails().forEach(showDetail -> builder.append(showDetail.index())
+                .append(": ").append(showDetail.startTime())
+                .append(" ").append(showDetail.title())
+                .append(" ").append(humanReadableFormat(showDetail.runningTime()))
+                .append(" $").append(showDetail.price())
+                .append(LINE_SEPARATOR));
 
         builder.append("===================================================")
                 .append(LINE_SEPARATOR);

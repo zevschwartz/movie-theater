@@ -1,7 +1,6 @@
 package com.jpmc.theater.json;
 
 import com.squareup.moshi.FromJson;
-import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.ToJson;
 import org.jetbrains.annotations.NotNull;
 

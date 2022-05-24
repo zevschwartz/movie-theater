@@ -24,7 +24,7 @@ class ApplicationTest {
     void shouldReturnStringFormatted() {
         CurrentDateProvider currentDateProvider = () -> LocalDate.of(2022, Month.MAY, 22);
 
-        var application = setupApplication(currentDateProvider);
+        var application = setupApplication();
 
         var expected = """
                 2022-05-22
@@ -44,7 +44,7 @@ class ApplicationTest {
     void shouldReturnJsonFormatted() throws JSONException {
         CurrentDateProvider currentDateProvider = () -> LocalDate.of(2022, Month.MAY, 22);
 
-        var application = setupApplication(currentDateProvider);
+        var application = setupApplication();
 
         @Language("JSON") var expected = """
                 {
@@ -82,8 +82,8 @@ class ApplicationTest {
 
 
     @NotNull
-    private Application setupApplication(CurrentDateProvider currentDateProvider) {
-        return new Application(Application.getMoshi(), currentDateProvider, theaterServiceStub());
+    private Application setupApplication() {
+        return new Application(Application.getMoshi(), theaterServiceStub());
     }
 
     private TheaterService theaterServiceStub() {

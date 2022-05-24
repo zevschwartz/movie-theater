@@ -1,15 +1,13 @@
 package com.jpmc.theater;
 
-import com.jpmc.theater.model.Theater;
 import com.jpmc.theater.service.CurrentDateProviderImpl;
 import com.jpmc.theater.service.TheaterSchedule;
-import com.jpmc.theater.service.TheaterService;
 import com.jpmc.theater.service.TheaterServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Integrations Tests")
 class ApplicationIntegrationTest {

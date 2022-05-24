@@ -5,7 +5,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Objects;
 
 public class CurrentDateProviderImpl implements Serializable, CurrentDateProvider {
     private static @Nullable
