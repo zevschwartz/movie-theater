@@ -53,13 +53,13 @@ class Application {
                 .build();
     }
 
-    String getTheaterScheduleFormatted() {
+    @NotNull String getTheaterScheduleFormatted() {
         var theaterSchedule = theaterService.getTheaterSchedule();
 
         return theaterScheduleFormatted(theaterSchedule);
     }
 
-    String getTheaterScheduleAsJson() {
+    @NotNull String getTheaterScheduleAsJson() {
         var theaterSchedule = theaterService.getTheaterSchedule();
 
         return moshi.adapter(TheaterSchedule.class).toJson(theaterSchedule);

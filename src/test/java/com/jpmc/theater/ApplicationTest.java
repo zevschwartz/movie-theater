@@ -86,6 +86,7 @@ class ApplicationTest {
         return new Application(Application.getMoshi(), theaterServiceStub());
     }
 
+    @NotNull
     private TheaterService theaterServiceStub() {
         LocalDateTime localDateTime = LocalDateTime.of(2022, Month.MAY, 22, 7, 0);
 
