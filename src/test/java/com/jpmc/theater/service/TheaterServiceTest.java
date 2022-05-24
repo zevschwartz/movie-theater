@@ -4,6 +4,7 @@ import com.jpmc.theater.model.Movie;
 import com.jpmc.theater.model.Showing;
 import com.jpmc.theater.model.Theater;
 import com.jpmc.theater.pricing.Discount;
+import com.jpmc.theater.pricing.FixedDiscount;
 import com.jpmc.theater.pricing.MovieDiscountRule;
 import org.junit.jupiter.api.Test;
 
@@ -14,12 +15,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TheaterServiceTest {
 
+    public static final MovieDiscountRule FIRST_DAY_MOVIE_DISCOUNT = new MovieDiscountRule((showing, sequence) -> sequence == 1,
+            Discount.ofFixed(2));
+    public static final MovieDiscountRule SPECIAL_MOVIE_DISCOUNT = new MovieDiscountRule((showing, sequence) -> sequence == 1,
+            Discount.ofPercentage(30));
+
+    final static MovieDiscountRule SEVENTH_MOVIE_DISCOUNT = new MovieDiscountRule(
+            (showing, sequence) -> showing.showStartTime().getDayOfMonth() == 7,
+            Discount.ofFixed(1));
+
     final TheaterService theaterService = new TheaterService(() -> LocalDate.of(2022, Month.MAY, 22));
 
     @Test
     void shouldGetPrettyScheduleWhenRequested() {
         var theaterService = new TheaterService(() -> LocalDate.of(2022, Month.MAY, 22));
-        var theater = theaterService.getTheater();
+        var theater = new Theater(theaterService.getShowings(), List.of());
 
         var expected = """
                 2022-05-22
@@ -40,12 +50,49 @@ public class TheaterServiceTest {
     }
 
     @Test
-    void specialMovieWith20PercentDiscount() {
-        Movie spiderMan = new Movie("Spider-Man: No Way Home", Duration.ofMinutes(90), 12.5, 1);
-        Showing showing = new Showing(spiderMan, LocalDateTime.of(LocalDate.now(), LocalTime.now()));
+    void shouldCalculateSeventhOfMonthMovieDiscountWhenMax() {
+        Movie spiderMan = new Movie("Spider-Man: No Way Home", Duration.ofMinutes(90), 10, 0);
+        List<Showing> shows = List.of(new Showing(spiderMan, LocalDateTime.now().withDayOfMonth(7)));
 
-        Theater theater = new Theater(List.of(showing), List.of(new MovieDiscountRule((show, __) -> show.movie().specialCode() == 1, Discount.ofPercentage(20))));
+        var discountRules = List.of(SEVENTH_MOVIE_DISCOUNT);
 
-        assertEquals(10, theater.calculateTicketPriceForShowing(1));
+        var theater = new Theater(shows, discountRules);
+
+        var price = theater.calculateTicketPriceForShowing(1);
+
+        assertEquals(9, price);
     }
+
+    @Test
+    void shouldCalculateFirstShowingOfDayMovieDiscountWhenMax() {
+        Movie spiderMan = new Movie("Spider-Man: No Way Home", Duration.ofMinutes(90), 10, 0);
+        List<Showing> shows = List.of(new Showing(spiderMan, LocalDateTime.now().withDayOfMonth(7)));
+
+        var discountRules = List.of(
+                SEVENTH_MOVIE_DISCOUNT,
+                FIRST_DAY_MOVIE_DISCOUNT);
+
+        var theater = new Theater(shows, discountRules);
+
+        var price = theater.calculateTicketPriceForShowing(1);
+
+        assertEquals(8, price);
+    }
+
+    @Test
+    void shouldCalculatePercentageSpecialMovieDiscountWhenMax() {
+        Movie spiderMan = new Movie("Spider-Man: No Way Home", Duration.ofMinutes(90), 10, 0);
+        List<Showing> shows = List.of(new Showing(spiderMan, LocalDateTime.now().withDayOfMonth(7)));
+
+        var discountRules = List.of(SEVENTH_MOVIE_DISCOUNT,
+                FIRST_DAY_MOVIE_DISCOUNT,
+                SPECIAL_MOVIE_DISCOUNT);
+
+        var theater = new Theater(shows, discountRules);
+
+        var price = theater.calculateTicketPriceForShowing(1);
+
+        assertEquals(7, price);
+    }
+
 }

@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public record Theater(@NotNull List<@NotNull Showing> schedule, @NotNull List<@NotNull DiscountRule> discountRules) {
+public record Theater(@NotNull List<@NotNull Showing> schedule, @NotNull List<? extends DiscountRule> discountRules) {
 
     public double calculateTicketPriceForShowing(int sequenceInDay) {
         var showing = getShowingForSequence(sequenceInDay);

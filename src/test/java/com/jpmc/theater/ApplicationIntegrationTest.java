@@ -10,18 +10,27 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ApplicationIntegrationTest {
 
-
     private final TheaterService theaterService = new TheaterService(CurrentDateProviderImpl.getInstance());
-    private final Theater subject = theaterService.getTheater();
+    private final Theater subject = new Theater(theaterService.getShowings(), Application.getDiscountRules());
 
     @Test
-    void checkSpiderManMoviePercentOffPrice() {
+    void checkSpiderManMovieSpecialPercentOffPrice() {
+        var reservation = subject.reserveWithSequence(new Customer("id", "name"), 8, 4);
+
+        assertEquals("Spider-Man: No Way Home", reservation.showing().movie().title());
+        assertEquals(12.5, reservation.showing().getMovieFee());
+
+        assertEquals(40.0, subject.calculateTicketPriceForReservation(reservation));
+    }
+
+    @Test
+    void checkSpiderManMovieElevenToFourPercentOffPrice() {
         var reservation = subject.reserveWithSequence(new Customer("id", "name"), 2, 4);
 
         assertEquals("Spider-Man: No Way Home", reservation.showing().movie().title());
         assertEquals(12.5, reservation.showing().getMovieFee());
 
-        assertEquals(40, subject.calculateTicketPriceForReservation(reservation));
+        assertEquals(37.5, subject.calculateTicketPriceForReservation(reservation));
     }
 
     @Test

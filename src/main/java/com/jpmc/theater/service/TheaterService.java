@@ -28,11 +28,7 @@ public class TheaterService {
         this.currentDateProvider = currentDateProvider;
     }
 
-    public @NotNull Theater getTheater() {
-        return new Theater(getShowings(), getDiscountRules());
-    }
-
-    private @NotNull List<Showing> getShowings() {
+    public @NotNull List<Showing> getShowings() {
         Movie spiderMan = new Movie("Spider-Man: No Way Home", Duration.ofMinutes(90), 12.5, 1);
         Movie turningRed = new Movie("Turning Red", Duration.ofMinutes(85), 11, 0);
         Movie theBatMan = new Movie("The Batman", Duration.ofMinutes(95), 9, 0);
@@ -48,19 +44,6 @@ public class TheaterService {
                 new Showing(theBatMan, LocalDateTime.of(currentDateProvider.currentDate(), LocalTime.of(23, 0)))
         );
     }
-
-    private @NotNull List<DiscountRule> getDiscountRules() {
-        final BiPredicate<Showing, Integer> specialMovieOne = (show, __) -> show.movie().specialCode() == 1;
-        BiPredicate<Showing, Integer> firstMoviePredicate = (__, sequence) -> sequence == 1;
-        BiPredicate<Showing, Integer> secondMoviePredicate = (__, sequence) -> sequence == 2;
-        var specialMovieDiscount = new MovieDiscountRule(specialMovieOne, Discount.ofPercentage(20)) {
-        };
-        var firstMovieDiscount = new MovieDiscountRule(firstMoviePredicate, Discount.ofFixed(3));
-        var secondMovieDiscount = new MovieDiscountRule(secondMoviePredicate, Discount.ofFixed(2));
-
-        return List.of(specialMovieDiscount, firstMovieDiscount, secondMovieDiscount);
-    }
-
 
     public @NotNull String getScheduleFormatted(@NotNull Theater theater) {
         StringBuilder builder = new StringBuilder()
