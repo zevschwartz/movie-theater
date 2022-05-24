@@ -1,14 +1,14 @@
 package com.jpmc.theater;
 
+import com.jpmc.theater.json.DurationAdapter;
+import com.jpmc.theater.json.LocalDateAdapter;
+import com.jpmc.theater.json.LocalDateTimeAdapter;
 import com.jpmc.theater.model.Showing;
 import com.jpmc.theater.model.Theater;
 import com.jpmc.theater.pricing.Discount;
 import com.jpmc.theater.pricing.DiscountRule;
 import com.jpmc.theater.pricing.MovieDiscountRule;
 import com.jpmc.theater.service.CurrentDateProviderImpl;
-import com.jpmc.theater.json.DurationAdapter;
-import com.jpmc.theater.json.LocalDateAdapter;
-import com.jpmc.theater.json.LocalDateTimeAdapter;
 import com.jpmc.theater.service.TheaterService;
 import com.squareup.moshi.Moshi;
 import org.jetbrains.annotations.NotNull;
@@ -53,10 +53,10 @@ public class Application {
         };
         var firstMovieDiscount = new MovieDiscountRule(firstMoviePredicate, Discount.ofFixed(3));
         var secondMovieDiscount = new MovieDiscountRule(secondMoviePredicate, Discount.ofFixed(2));
-        var elevenAndFourhDiscount = new MovieDiscountRule(elevenAndFourPredicate, Discount.ofPercentage(25));
+        var elevenAndFourthDiscount = new MovieDiscountRule(elevenAndFourPredicate, Discount.ofPercentage(25));
         var seventhOfMonthDiscount = new MovieDiscountRule(seventhOfMonthPredicate, Discount.ofFixed(1));
 
-        return List.of(specialMovieDiscount, firstMovieDiscount, secondMovieDiscount, elevenAndFourhDiscount, seventhOfMonthDiscount);
+        return List.of(specialMovieDiscount, firstMovieDiscount, secondMovieDiscount, elevenAndFourthDiscount, seventhOfMonthDiscount);
     }
 
 }

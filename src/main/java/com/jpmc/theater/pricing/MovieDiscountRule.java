@@ -15,7 +15,7 @@ public class MovieDiscountRule implements DiscountRule {
     }
 
     @Override
-    public double calculateTotalDiscount(Showing showing, int sequenceInDay) {
+    public double calculateTotalDiscount(@NotNull Showing showing, int sequenceInDay) {
         if(!showingPredicate.test(showing, sequenceInDay)) {
             return 0;
         }

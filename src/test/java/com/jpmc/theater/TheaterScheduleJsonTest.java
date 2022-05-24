@@ -37,7 +37,7 @@ public class TheaterScheduleJsonTest {
     }
 
     @Test
-    void shouldsDeserializeCorrectly() throws IOException {
+    void shouldDeserializeCorrectly() throws IOException {
         var json = """
                 {"currentDate":"20220524","showDetails":[{"index":1,"startTime":"2022-05-24T09:00:00","title":"Turning Red","runningTime":"PT1H25M","price":11.0}]}""";
 

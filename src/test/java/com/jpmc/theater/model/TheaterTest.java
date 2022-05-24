@@ -1,6 +1,7 @@
 package com.jpmc.theater.model;
 
 import com.jpmc.theater.pricing.DiscountRule;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -97,6 +98,7 @@ public class TheaterTest {
                 "price for reservation is not correct");
     }
 
+    @NotNull
     private Theater generateTheaterWithScheduleAndDiscounts() {
         final List<Showing> schedules = generateShows();
 
@@ -106,6 +108,7 @@ public class TheaterTest {
         return new Theater(schedules, discounts);
     }
 
+    @NotNull
     private List<DiscountRule> generateDiscounts() {
         return List.of(
                 ((showing, sequenceInDay) -> sequenceInDay == 2 ? showing.getMovieFee() * .10 : 0.0),
@@ -113,6 +116,7 @@ public class TheaterTest {
         );
     }
 
+    @NotNull
     private List<Showing> generateShows() {
         return List.of(new Showing(
                         new Movie("spiderman", Duration.ofMinutes(90), 50, 0),
