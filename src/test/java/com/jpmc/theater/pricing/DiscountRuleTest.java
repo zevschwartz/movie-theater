@@ -1,14 +1,15 @@
-package com.jpmc.theater;
+package com.jpmc.theater.pricing;
 
+import com.jpmc.theater.model.Movie;
+import com.jpmc.theater.model.Showing;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Pricing Rules Tests")
 class DiscountRuleTest {
@@ -19,7 +20,7 @@ class DiscountRuleTest {
 
         @Test
         void shouldReturnWithCorrectDiscount() {
-            var sequenceRule = new SequenceDiscountRule(10);
+            var sequenceRule = new MovieDiscountRule((showing, sequence) -> sequence == 1, Discount.ofFixed(10));
             Showing showing = new Showing(
                     new Movie("spiderman", Duration.ofMinutes(90), 50, 0),
                     LocalDateTime.now()
@@ -32,7 +33,7 @@ class DiscountRuleTest {
 
         @Test
         void shouldReturnWithNoDiscountWhenNothingApplicableTest() {
-            var sequenceRule = new SequenceDiscountRule(List.of());
+            var sequenceRule = new MovieDiscountRule((showing, sequence) -> false, Discount.ofFixed(10));
             Showing showing = new Showing(
                     new Movie("spiderman", Duration.ofMinutes(90), 50, 0),
                     LocalDateTime.now()
@@ -51,7 +52,7 @@ class DiscountRuleTest {
 
         @Test
         void shouldReturnWithCorrectDiscount() {
-            var specialMovieDiscountRule = new PercentDiscountRule((show, __) -> true, 10);
+            var specialMovieDiscountRule = new MovieDiscountRule((show, __) -> true, Discount.ofPercentage(10));
             Showing showing = new Showing(
                     new Movie("spiderman", Duration.ofMinutes(90), 50, 1),
                     LocalDateTime.now()
@@ -64,7 +65,7 @@ class DiscountRuleTest {
 
         @Test
         void shouldReturnWithNoDiscountWhenNothingApplicableTest() {
-            var specialMovieDiscountRule = new PercentDiscountRule((show, __) -> false, 10);
+            var specialMovieDiscountRule = new MovieDiscountRule((show, __) -> false, Discount.ofPercentage(10));
             Showing showing = new Showing(
                     new Movie("spiderman", Duration.ofMinutes(90), 50, 0),
                     LocalDateTime.now()

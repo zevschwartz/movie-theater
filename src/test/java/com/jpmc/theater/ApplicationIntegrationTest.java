@@ -1,12 +1,10 @@
 package com.jpmc.theater;
 
+import com.jpmc.theater.model.Customer;
+import com.jpmc.theater.model.Theater;
+import com.jpmc.theater.service.CurrentDateProviderImpl;
+import com.jpmc.theater.service.TheaterService;
 import org.junit.jupiter.api.Test;
-
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 

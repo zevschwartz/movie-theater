@@ -21,7 +21,7 @@ dependencies {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(18))
     }
 }
 
@@ -29,6 +29,11 @@ application {
     mainClass.set("com.jpmc.theater.Application")
 }
 
+tasks.withType<JavaCompile>().forEach {
+    it.options.compilerArgs.add("--enable-preview")
+}
+
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
+    jvmArgs("--enable-preview")
 }

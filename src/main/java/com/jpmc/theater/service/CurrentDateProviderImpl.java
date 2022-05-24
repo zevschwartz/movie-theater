@@ -1,18 +1,15 @@
-package com.jpmc.theater;
+package com.jpmc.theater.service;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Objects;
 
-@FunctionalInterface
-public interface CurrentDateProvider {
-    LocalDate currentDate();
-}
-
-class CurrentDateProviderImpl implements Serializable, CurrentDateProvider {
-    private static @Nullable volatile CurrentDateProviderImpl instance = null;
+public class CurrentDateProviderImpl implements Serializable, CurrentDateProvider {
+    private static @Nullable
+    volatile CurrentDateProviderImpl instance = null;
 
     private CurrentDateProviderImpl() {
         if (instance != null) {

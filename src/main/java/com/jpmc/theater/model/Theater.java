@@ -1,25 +1,22 @@
-package com.jpmc.theater;
+package com.jpmc.theater.model;
 
+import com.jpmc.theater.pricing.DiscountRule;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
-record Theater(@NotNull List<@NotNull Showing> schedule, @NotNull List<@NotNull DiscountRule> discountRules) {
-
-    Theater(List<Showing> schedule) {
-        this(schedule, List.of());
-    }
+public record Theater(@NotNull List<@NotNull Showing> schedule, @NotNull List<@NotNull DiscountRule> discountRules) {
 
     public double calculateTicketPriceForShowing(int sequenceInDay) {
-       var showing = getShowingForSequence(sequenceInDay);
+        var showing = getShowingForSequence(sequenceInDay);
 
         var discount = discountRules.stream()
                 .mapToDouble(r -> r.calculateTotalDiscount(showing, sequenceInDay))
                 .max()
                 .orElse(0.0);
 
-        return showing.movie().ticketPrice() - discount;
+        return showing.getMovieFee() - discount;
     }
 
 
@@ -39,7 +36,7 @@ record Theater(@NotNull List<@NotNull Showing> schedule, @NotNull List<@NotNull 
 
     @NotNull
     private Showing getShowingForSequence(int sequence) {
-        if(sequence < 1 || sequence > schedule.size()){
+        if (sequence < 1 || sequence > schedule.size()) {
             throw new IllegalStateException("not able to find any showing for given sequence " + sequence);
         }
 

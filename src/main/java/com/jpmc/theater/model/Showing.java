@@ -1,12 +1,10 @@
-package com.jpmc.theater;
+package com.jpmc.theater.model;
 
 import java.time.LocalDateTime;
 
 
-record Showing(Movie movie, LocalDateTime showStartTime) {
-
+public record Showing(Movie movie, LocalDateTime showStartTime) {
     public double getMovieFee() {
         return movie.ticketPrice();
     }
-
 }

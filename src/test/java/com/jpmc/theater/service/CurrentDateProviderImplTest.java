@@ -1,5 +1,6 @@
-package com.jpmc.theater;
+package com.jpmc.theater.service;
 
+import com.jpmc.theater.service.CurrentDateProviderImpl;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

@@ -1,5 +1,7 @@
-package com.jpmc.theater;
+package com.jpmc.theater.model;
 
+import com.jpmc.theater.model.*;
+import com.jpmc.theater.pricing.DiscountRule;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

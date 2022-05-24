@@ -1,5 +1,10 @@
-package com.jpmc.theater;
+package com.jpmc.theater.service;
 
+import com.jpmc.theater.model.Movie;
+import com.jpmc.theater.model.Showing;
+import com.jpmc.theater.model.Theater;
+import com.jpmc.theater.pricing.Discount;
+import com.jpmc.theater.pricing.MovieDiscountRule;
 import org.junit.jupiter.api.Test;
 
 import java.time.*;
@@ -39,10 +44,8 @@ public class TheaterServiceTest {
         Movie spiderMan = new Movie("Spider-Man: No Way Home", Duration.ofMinutes(90), 12.5, 1);
         Showing showing = new Showing(spiderMan, LocalDateTime.of(LocalDate.now(), LocalTime.now()));
 
-        Theater theater = new Theater(List.of(showing), List.of(new PercentDiscountRule((show, __) -> show.movie().specialCode() == 1, 20)));
+        Theater theater = new Theater(List.of(showing), List.of(new MovieDiscountRule((show, __) -> show.movie().specialCode() == 1, Discount.ofPercentage(20))));
 
         assertEquals(10, theater.calculateTicketPriceForShowing(1));
-
-        System.out.println(Duration.ofMinutes(90));
     }
 }

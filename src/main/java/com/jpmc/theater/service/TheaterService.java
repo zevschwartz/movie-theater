@@ -1,5 +1,11 @@
-package com.jpmc.theater;
+package com.jpmc.theater.service;
 
+import com.jpmc.theater.model.Movie;
+import com.jpmc.theater.model.Showing;
+import com.jpmc.theater.model.Theater;
+import com.jpmc.theater.pricing.Discount;
+import com.jpmc.theater.pricing.DiscountRule;
+import com.jpmc.theater.pricing.MovieDiscountRule;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
@@ -25,6 +31,7 @@ public class TheaterService {
     public @NotNull Theater getTheater() {
         return new Theater(getShowings(), getDiscountRules());
     }
+
     private @NotNull List<Showing> getShowings() {
         Movie spiderMan = new Movie("Spider-Man: No Way Home", Duration.ofMinutes(90), 12.5, 1);
         Movie turningRed = new Movie("Turning Red", Duration.ofMinutes(85), 11, 0);
@@ -44,9 +51,14 @@ public class TheaterService {
 
     private @NotNull List<DiscountRule> getDiscountRules() {
         final BiPredicate<Showing, Integer> specialMovieOne = (show, __) -> show.movie().specialCode() == 1;
-        PercentDiscountRule specialMovieDiscount = new PercentDiscountRule(specialMovieOne, 20);
+        BiPredicate<Showing, Integer> firstMoviePredicate = (__, sequence) -> sequence == 1;
+        BiPredicate<Showing, Integer> secondMoviePredicate = (__, sequence) -> sequence == 2;
+        var specialMovieDiscount = new MovieDiscountRule(specialMovieOne, Discount.ofPercentage(20)) {
+        };
+        var firstMovieDiscount = new MovieDiscountRule(firstMoviePredicate, Discount.ofFixed(3));
+        var secondMovieDiscount = new MovieDiscountRule(secondMoviePredicate, Discount.ofFixed(2));
 
-        return List.of(specialMovieDiscount, new SequenceDiscountRule(3, 2));
+        return List.of(specialMovieDiscount, firstMovieDiscount, secondMovieDiscount);
     }
 
 
