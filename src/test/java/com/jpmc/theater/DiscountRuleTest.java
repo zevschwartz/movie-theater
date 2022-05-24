@@ -46,12 +46,12 @@ class DiscountRuleTest {
 
 
     @Nested
-    @DisplayName("Special Movie Percent Discount")
-    public class SpecialMovieDiscountTest {
+    @DisplayName("Percent Discount Tests")
+    public class PercentDiscountRuleTest {
 
         @Test
         void shouldReturnWithCorrectDiscount() {
-            var specialMovieDiscountRule = new SpecialMoviePercentDiscountRule(1,10);
+            var specialMovieDiscountRule = new PercentDiscountRule((show, __) -> true, 10);
             Showing showing = new Showing(
                     new Movie("spiderman", Duration.ofMinutes(90), 50, 1),
                     LocalDateTime.now()
@@ -64,7 +64,7 @@ class DiscountRuleTest {
 
         @Test
         void shouldReturnWithNoDiscountWhenNothingApplicableTest() {
-            var specialMovieDiscountRule = new SpecialMoviePercentDiscountRule(1,10);
+            var specialMovieDiscountRule = new PercentDiscountRule((show, __) -> false, 10);
             Showing showing = new Showing(
                     new Movie("spiderman", Duration.ofMinutes(90), 50, 0),
                     LocalDateTime.now()
@@ -75,6 +75,4 @@ class DiscountRuleTest {
             assertEquals(0, discount);
         }
     }
-
-
 }

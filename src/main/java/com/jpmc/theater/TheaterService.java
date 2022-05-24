@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiPredicate;
 import java.util.stream.IntStream;
 
 public class TheaterService {
@@ -21,7 +22,10 @@ public class TheaterService {
         this.currentDateProvider = currentDateProvider;
     }
 
-    public @NotNull List<Showing> getShowings() {
+    public @NotNull Theater getTheater() {
+        return new Theater(getShowings(), getDiscountRules());
+    }
+    private @NotNull List<Showing> getShowings() {
         Movie spiderMan = new Movie("Spider-Man: No Way Home", Duration.ofMinutes(90), 12.5, 1);
         Movie turningRed = new Movie("Turning Red", Duration.ofMinutes(85), 11, 0);
         Movie theBatMan = new Movie("The Batman", Duration.ofMinutes(95), 9, 0);
@@ -38,8 +42,11 @@ public class TheaterService {
         );
     }
 
-    public @NotNull List<DiscountRule> getDiscountRules() {
-        return List.of(new SpecialMoviePercentDiscountRule(1,20), new SequenceDiscountRule(3, 2));
+    private @NotNull List<DiscountRule> getDiscountRules() {
+        final BiPredicate<Showing, Integer> specialMovieOne = (show, __) -> show.movie().specialCode() == 1;
+        PercentDiscountRule specialMovieDiscount = new PercentDiscountRule(specialMovieOne, 20);
+
+        return List.of(specialMovieDiscount, new SequenceDiscountRule(3, 2));
     }
 
 

@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 @FunctionalInterface
 public interface DiscountRule {
@@ -12,23 +14,24 @@ public interface DiscountRule {
 }
 
 
-class SpecialMoviePercentDiscountRule implements DiscountRule {
-    private final int specialMovieCode;
+class PercentDiscountRule implements DiscountRule {
+
+    final BiPredicate<Showing, Integer> showingPredicate;
     private final int percentOff;
 
-    public SpecialMoviePercentDiscountRule(int specialMovieCode, int percentOff) {
+    public PercentDiscountRule(BiPredicate<Showing, Integer> showingPredicate, int percentOff) {
         if (percentOff < 0 || percentOff > 100) {
             throw new IllegalStateException("percent off must be between 0 and 100");
         }
         this.percentOff = percentOff;
-        this.specialMovieCode = specialMovieCode;
+        this.showingPredicate = showingPredicate;
     }
 
     @Override
     public double calculateTotalDiscount(@NotNull Showing showing, int sequenceInDay) {
         double decimalFromPercent = percentOff / 100.0;
 
-        return showing.movie().specialCode() == specialMovieCode ? showing.movie().ticketPrice() * decimalFromPercent : 0;
+        return showingPredicate.test(showing, sequenceInDay) ? showing.movie().ticketPrice() * decimalFromPercent : 0;
     }
 }
 

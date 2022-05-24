@@ -14,7 +14,7 @@ public class TheaterServiceTest {
     @Test
     void shouldGetPrettyScheduleWhenRequested() {
         var theaterService = new TheaterService(() -> LocalDate.of(2022, Month.MAY, 22));
-        var theater = new Theater(theaterService.getShowings());
+        var theater = theaterService.getTheater();
 
         var expected = """
                 2022-05-22
@@ -39,7 +39,7 @@ public class TheaterServiceTest {
         Movie spiderMan = new Movie("Spider-Man: No Way Home", Duration.ofMinutes(90), 12.5, 1);
         Showing showing = new Showing(spiderMan, LocalDateTime.of(LocalDate.now(), LocalTime.now()));
 
-        Theater theater = new Theater(List.of(showing), List.of(new SpecialMoviePercentDiscountRule(1,20)));
+        Theater theater = new Theater(List.of(showing), List.of(new PercentDiscountRule((show, __) -> show.movie().specialCode() == 1, 20)));
 
         assertEquals(10, theater.calculateTicketPriceForShowing(1));
 

@@ -4,8 +4,7 @@ public class Application {
     public static void main(String[] args) {
         var currentDateProvider = CurrentDateProviderImpl.getInstance();
         TheaterService theaterService = new TheaterService(currentDateProvider);
-
-        Theater theater = new Theater(theaterService.getShowings(), theaterService.getDiscountRules());
+        Theater theater = theaterService.getTheater();
         System.out.println(theaterService.getScheduleFormatted(theater));
     }
 }
