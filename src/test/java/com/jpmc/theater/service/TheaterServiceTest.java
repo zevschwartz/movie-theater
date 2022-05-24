@@ -4,7 +4,6 @@ import com.jpmc.theater.model.Movie;
 import com.jpmc.theater.model.Showing;
 import com.jpmc.theater.model.Theater;
 import com.jpmc.theater.pricing.Discount;
-import com.jpmc.theater.pricing.FixedDiscount;
 import com.jpmc.theater.pricing.MovieDiscountRule;
 import org.junit.jupiter.api.Test;
 

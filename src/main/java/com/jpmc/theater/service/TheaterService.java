@@ -1,11 +1,10 @@
 package com.jpmc.theater.service;
 
+import com.jpmc.theater.ShowDetail;
+import com.jpmc.theater.TheaterSchedule;
 import com.jpmc.theater.model.Movie;
 import com.jpmc.theater.model.Showing;
 import com.jpmc.theater.model.Theater;
-import com.jpmc.theater.pricing.Discount;
-import com.jpmc.theater.pricing.DiscountRule;
-import com.jpmc.theater.pricing.MovieDiscountRule;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
@@ -13,7 +12,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiPredicate;
 import java.util.stream.IntStream;
 
 public class TheaterService {
@@ -63,6 +61,18 @@ public class TheaterService {
                 .append(LINE_SEPARATOR);
 
         return builder.toString();
+    }
+
+    public @NotNull TheaterSchedule getTheaterSchedule(@NotNull Theater theater) {
+        List<ShowDetail> showDetails = IntStream.range(0, theater.schedule().size())
+                .boxed()
+                .map(index -> {
+                    var showing = theater.schedule().get(index);
+                    return new ShowDetail(index + 1, showing.showStartTime(), showing.movie().title(), showing.movie().runningTime(), showing.getMovieFee());
+                })
+                .toList();
+
+        return new TheaterSchedule(currentDateProvider.currentDate(), showDetails);
     }
 
     private @NotNull String humanReadableFormat(@NotNull Duration duration) {

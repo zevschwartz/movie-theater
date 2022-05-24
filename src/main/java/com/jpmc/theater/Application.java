@@ -6,7 +6,11 @@ import com.jpmc.theater.pricing.Discount;
 import com.jpmc.theater.pricing.DiscountRule;
 import com.jpmc.theater.pricing.MovieDiscountRule;
 import com.jpmc.theater.service.CurrentDateProviderImpl;
+import com.jpmc.theater.json.DurationAdapter;
+import com.jpmc.theater.json.LocalDateAdapter;
+import com.jpmc.theater.json.LocalDateTimeAdapter;
 import com.jpmc.theater.service.TheaterService;
+import com.squareup.moshi.Moshi;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -18,6 +22,23 @@ public class Application {
         TheaterService theaterService = new TheaterService(currentDateProvider);
         Theater theater = new Theater(theaterService.getShowings(), getDiscountRules());
         System.out.println(theaterService.getScheduleFormatted(theater));
+
+        System.out.println("json version");
+        Moshi moshi = getMoshi();
+
+        var adapter = moshi.adapter(TheaterSchedule.class);
+
+        System.out.println(adapter.toJson(theaterService.getTheaterSchedule(theater)));
+
+    }
+
+    @NotNull
+    static Moshi getMoshi() {
+        return new Moshi.Builder()
+                .add(new DurationAdapter())
+                .add(new LocalDateAdapter())
+                .add(new LocalDateTimeAdapter())
+                .build();
     }
 
 

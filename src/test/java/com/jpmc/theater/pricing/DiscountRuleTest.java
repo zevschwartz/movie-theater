@@ -2,6 +2,8 @@ package com.jpmc.theater.pricing;
 
 import com.jpmc.theater.model.Movie;
 import com.jpmc.theater.model.Showing;
+import com.jpmc.theater.pricing.Discount;
+import com.jpmc.theater.pricing.MovieDiscountRule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
