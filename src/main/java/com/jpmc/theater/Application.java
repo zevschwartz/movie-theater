@@ -3,37 +3,49 @@ package com.jpmc.theater;
 import com.jpmc.theater.json.DurationAdapter;
 import com.jpmc.theater.json.LocalDateAdapter;
 import com.jpmc.theater.json.LocalDateTimeAdapter;
-import com.jpmc.theater.model.Showing;
 import com.jpmc.theater.model.Theater;
-import com.jpmc.theater.pricing.Discount;
-import com.jpmc.theater.pricing.DiscountRule;
-import com.jpmc.theater.pricing.MovieDiscountRule;
-import com.jpmc.theater.service.CurrentDateProviderImpl;
-import com.jpmc.theater.service.TheaterService;
+import com.jpmc.theater.service.*;
 import com.squareup.moshi.Moshi;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.function.BiPredicate;
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
-public class Application {
+class Application {
+
+    @NotNull
+    private static final String LINE_SEPARATOR =
+            System.getProperty("line.separator") != null ? System.getProperty("line.separator") : "\n";
+
+    private final @NotNull CurrentDateProvider currentDateProvider;
+    private final @NotNull TheaterService theaterService;
+    private final @NotNull Moshi moshi;
+
+    Application(@NotNull Moshi moshi, @NotNull CurrentDateProvider currentDateProvider, @NotNull TheaterService theaterService) {
+        this.currentDateProvider = currentDateProvider;
+        this.theaterService = theaterService;
+        this.moshi = moshi;
+    }
+
     public static void main(String[] args) {
         var currentDateProvider = CurrentDateProviderImpl.getInstance();
-        TheaterService theaterService = new TheaterService(currentDateProvider);
-        Theater theater = new Theater(theaterService.getShowings(), getDiscountRules());
-        System.out.println(theaterService.getScheduleFormatted(theater));
+        var theaterService = new TheaterServiceImpl(currentDateProvider);
+        var moshi = getMoshi();
 
-        System.out.println("json version");
-        Moshi moshi = getMoshi();
+        var application = new Application(moshi, currentDateProvider, theaterService);
 
-        var adapter = moshi.adapter(TheaterSchedule.class);
+        System.out.println("\n\n=== string formatted version ===");
 
-        System.out.println(adapter.toJson(theaterService.getTheaterSchedule(theater)));
+        System.out.println(application.getTheaterScheduleFormatted());
+
+        System.out.println("\n\n=== json formatted version ===");
+
+        System.out.println(application.getTheaterScheduleAsJson());
 
     }
 
     @NotNull
-    static Moshi getMoshi() {
+    public static Moshi getMoshi() {
         return new Moshi.Builder()
                 .add(new DurationAdapter())
                 .add(new LocalDateAdapter())
@@ -41,22 +53,53 @@ public class Application {
                 .build();
     }
 
+    String getTheaterScheduleFormatted() {
+        var theaterSchedule = theaterService.getTheaterSchedule();
 
-    public static @NotNull List<DiscountRule> getDiscountRules() {
-        final BiPredicate<Showing, Integer> specialMovieOne = (show, __) -> show.movie().specialCode() == 1;
-        BiPredicate<Showing, Integer> firstMoviePredicate = (__, sequence) -> sequence == 1;
-        BiPredicate<Showing, Integer> secondMoviePredicate = (__, sequence) -> sequence == 2;
-        BiPredicate<Showing, Integer> elevenAndFourPredicate = (show, __) -> show.showStartTime().getHour() >= 11 && show.showStartTime().getHour() <= 16;
-        BiPredicate<Showing, Integer> seventhOfMonthPredicate = (show, __) -> show.showStartTime().getDayOfMonth() == 7;
+        return theaterScheduleFormatted(theaterSchedule);
+    }
 
-        var specialMovieDiscount = new MovieDiscountRule(specialMovieOne, Discount.ofPercentage(20)) {
-        };
-        var firstMovieDiscount = new MovieDiscountRule(firstMoviePredicate, Discount.ofFixed(3));
-        var secondMovieDiscount = new MovieDiscountRule(secondMoviePredicate, Discount.ofFixed(2));
-        var elevenAndFourthDiscount = new MovieDiscountRule(elevenAndFourPredicate, Discount.ofPercentage(25));
-        var seventhOfMonthDiscount = new MovieDiscountRule(seventhOfMonthPredicate, Discount.ofFixed(1));
+    String getTheaterScheduleAsJson() {
+        var theaterSchedule = theaterService.getTheaterSchedule();
 
-        return List.of(specialMovieDiscount, firstMovieDiscount, secondMovieDiscount, elevenAndFourthDiscount, seventhOfMonthDiscount);
+        return moshi.adapter(TheaterSchedule.class).toJson(theaterSchedule);
+    }
+
+    private @NotNull String theaterScheduleFormatted(@NotNull TheaterSchedule theaterSchedule) {
+        StringBuilder builder = new StringBuilder()
+                .append(theaterSchedule.currentDate()).append(LINE_SEPARATOR)
+                .append("===================================================").append(LINE_SEPARATOR);
+
+        theaterSchedule.showDetails().forEach(showDetail -> {
+            builder.append(showDetail.index())
+                    .append(": ").append(showDetail.startTime())
+                    .append(" ").append(showDetail.title())
+                    .append(" ").append(humanReadableFormat(showDetail.runningTime()))
+                    .append(" $").append(showDetail.price())
+                    .append(LINE_SEPARATOR);
+        });
+
+        builder.append("===================================================")
+                .append(LINE_SEPARATOR);
+
+        return builder.toString();
+    }
+
+
+    private @NotNull String humanReadableFormat(@NotNull Duration duration) {
+        long hour = duration.toHours();
+        long remainingMin = duration.toMinutes() - TimeUnit.HOURS.toMinutes(duration.toHours());
+
+        return String.format("(%s hour%s %s minute%s)", hour, handlePlural(hour), remainingMin, handlePlural(remainingMin));
+    }
+
+    // (s) postfix should be added to handle plural correctly
+    private @NotNull String handlePlural(long value) {
+        if (value == 1) {
+            return "";
+        } else {
+            return "s";
+        }
     }
 
 }

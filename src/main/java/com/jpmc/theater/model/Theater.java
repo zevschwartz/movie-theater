@@ -8,7 +8,7 @@ import java.util.stream.IntStream;
 
 public record Theater(@NotNull List<@NotNull Showing> schedule, @NotNull List<? extends DiscountRule> discountRules) {
 
-    public double calculateTicketPriceForShowing(int sequenceInDay) {
+    public double calculateTicketPriceForSequence(int sequenceInDay) {
         var showing = getShowingForSequence(sequenceInDay);
 
         var discount = discountRules.stream()
@@ -19,19 +19,17 @@ public record Theater(@NotNull List<@NotNull Showing> schedule, @NotNull List<? 
         return showing.getMovieFee() - discount;
     }
 
-
     public @NotNull Reservation reserveWithSequence(@NotNull Customer customer, int sequence, int howManyTickets) {
         Showing showing = getShowingForSequence(sequence);
 
         return new Reservation(customer, showing, howManyTickets);
     }
 
-
-    public double calculateTicketPriceForReservation(@NotNull Reservation reservation) {
+    public double calculateTotalPriceForReservation(@NotNull Reservation reservation) {
         var reservedShowing = reservation.showing();
         var showingSequence = findSequenceForShowing(reservedShowing);
 
-        return calculateTicketPriceForShowing(showingSequence) * reservation.audienceCount();
+        return calculateTicketPriceForSequence(showingSequence) * reservation.audienceCount();
     }
 
     @NotNull

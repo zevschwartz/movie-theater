@@ -23,7 +23,7 @@ public class TheaterTest {
         var theater = generateTheaterWithScheduleAndDiscounts();
 
         assertEquals(expectedPrice,
-                theater.calculateTicketPriceForShowing(sequence),
+                theater.calculateTicketPriceForSequence(sequence),
                 "Showing fee should calculate correctly");
     }
 
@@ -37,7 +37,7 @@ public class TheaterTest {
                 ));
 
         assertEquals(42.0,
-                theater.calculateTicketPriceForShowing(1),
+                theater.calculateTicketPriceForSequence(1),
                 "only largest discount should be used");
     }
 
@@ -48,7 +48,7 @@ public class TheaterTest {
         var theater = generateTheaterWithScheduleAndDiscounts();
 
         Assertions.assertThrows(IllegalStateException.class,
-                () -> theater.calculateTicketPriceForShowing(invalidSequence),
+                () -> theater.calculateTicketPriceForSequence(invalidSequence),
                 "not able to find any showing for given sequence");
     }
 
@@ -77,7 +77,7 @@ public class TheaterTest {
         var subject = new Theater(List.of(showing), List.of());
 
         assertEquals(37.5,
-                subject.calculateTicketPriceForReservation(reservation),
+                subject.calculateTotalPriceForReservation(reservation),
                 "Reservation fee should calculate correctly");
     }
 
@@ -94,7 +94,7 @@ public class TheaterTest {
 
         double expectedPrice = 4 * 72.0;
         assertEquals(expectedPrice,
-                theater.calculateTicketPriceForReservation(reservation),
+                theater.calculateTotalPriceForReservation(reservation),
                 "price for reservation is not correct");
     }
 

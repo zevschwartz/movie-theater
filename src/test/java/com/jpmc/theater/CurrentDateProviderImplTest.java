@@ -1,4 +1,4 @@
-package com.jpmc.theater.service;
+package com.jpmc.theater;
 
 import com.jpmc.theater.service.CurrentDateProviderImpl;
 import org.junit.jupiter.api.Test;
