@@ -33,11 +33,15 @@ application {
     mainClass.set("com.jpmc.theater.Application")
 }
 
-tasks.withType<JavaCompile>().forEach {
-    it.options.compilerArgs.add("--enable-preview")
+tasks.withType<JavaExec> {
+    jvmArgs("--enable-preview")
 }
 
-tasks.getByName<Test>("test") {
+tasks.withType<JavaCompile>().configureEach {
+    options.compilerArgs.add("--enable-preview")
+}
+
+tasks.withType<Test> {
     useJUnitPlatform()
     jvmArgs("--enable-preview")
 }
