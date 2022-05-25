@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Integrations Tests")
-class TheaterServiceImplntegrationTest {
+class TheaterScheduleServiceImplntegrationTest {
 
-    private final TheaterServiceImpl theaterService = new TheaterServiceImpl(CurrentDateProviderImpl.getInstance());
+    private final TheaterScheduleServiceImpl theaterService = new TheaterScheduleServiceImpl(CurrentDateProviderImpl.getInstance());
 
     @Nested
     @DisplayName("Pricing Rules on Reservations IT")

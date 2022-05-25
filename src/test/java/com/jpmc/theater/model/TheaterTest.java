@@ -1,6 +1,5 @@
 package com.jpmc.theater.model;
 
-import com.jpmc.theater.pricing.DiscountRule;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -11,6 +10,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.function.BiFunction;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -31,9 +31,9 @@ public class TheaterTest {
     void shouldCalculateCorrectPriceWhenThereAreMultipleDiscounts() {
         var theater = new Theater(generateShows(),
                 List.of(
-                        (showing, sequenceInDay) -> sequenceInDay == 1 ? 5 : 0,
-                        (showing, sequenceInDay) -> sequenceInDay == 1 ? 8 : 0,
-                        (showing, sequenceInDay) -> sequenceInDay == 1 ? 3 : 0
+                        (showing, sequenceInDay) -> sequenceInDay == 1 ? 5.0 : 0.0,
+                        (showing, sequenceInDay) -> sequenceInDay == 1 ? 8.0 : 0.0,
+                        (showing, sequenceInDay) -> sequenceInDay == 1 ? 3.0 : 0.0
                 ));
 
         assertEquals(42.0,
@@ -102,14 +102,14 @@ public class TheaterTest {
     private Theater generateTheaterWithScheduleAndDiscounts() {
         final List<Showing> schedules = generateShows();
 
-        final List<DiscountRule> discounts = generateDiscounts();
+        final List<BiFunction<Showing, Integer, Double>> discounts = generateDiscounts();
 
 
         return new Theater(schedules, discounts);
     }
 
     @NotNull
-    private List<DiscountRule> generateDiscounts() {
+    private List<BiFunction<Showing, Integer, Double>> generateDiscounts() {
         return List.of(
                 ((showing, sequenceInDay) -> sequenceInDay == 2 ? showing.getMovieFee() * .10 : 0.0),
                 ((showing, sequenceInDay) -> sequenceInDay == 1 ? 5 : 0.0)

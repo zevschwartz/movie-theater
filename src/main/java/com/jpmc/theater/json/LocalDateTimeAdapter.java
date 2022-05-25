@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class LocalDateTimeAdapter {
+class LocalDateTimeAdapter {
     @ToJson
     @NotNull
     String fromLocalDateTime(@NotNull LocalDateTime dateTime) {

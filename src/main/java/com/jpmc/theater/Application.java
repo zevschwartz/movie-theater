@@ -1,12 +1,10 @@
 package com.jpmc.theater;
 
-import com.jpmc.theater.json.DurationAdapter;
-import com.jpmc.theater.json.LocalDateAdapter;
-import com.jpmc.theater.json.LocalDateTimeAdapter;
+import com.jpmc.theater.json.MoshiConfig;
 import com.jpmc.theater.service.CurrentDateProviderImpl;
 import com.jpmc.theater.service.TheaterSchedule;
-import com.jpmc.theater.service.TheaterService;
-import com.jpmc.theater.service.TheaterServiceImpl;
+import com.jpmc.theater.service.TheaterScheduleService;
+import com.jpmc.theater.service.TheaterScheduleServiceImpl;
 import com.squareup.moshi.Moshi;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,18 +17,18 @@ class Application {
     private static final String LINE_SEPARATOR =
             System.getProperty("line.separator") != null ? System.getProperty("line.separator") : "\n";
 
-    private final @NotNull TheaterService theaterService;
+    private final @NotNull TheaterScheduleService theaterScheduleService;
     private final @NotNull Moshi moshi;
 
-    Application(@NotNull Moshi moshi, @NotNull TheaterService theaterService) {
-        this.theaterService = theaterService;
+    Application(@NotNull Moshi moshi, @NotNull TheaterScheduleService theaterScheduleService) {
+        this.theaterScheduleService = theaterScheduleService;
         this.moshi = moshi;
     }
 
     public static void main(String[] args) {
         var currentDateProvider = CurrentDateProviderImpl.getInstance();
-        var theaterService = new TheaterServiceImpl(currentDateProvider);
-        var moshi = getMoshi();
+        var theaterService = new TheaterScheduleServiceImpl(currentDateProvider);
+        var moshi = MoshiConfig.getMoshi();
 
         var application = new Application(moshi, theaterService);
 
@@ -44,33 +42,24 @@ class Application {
 
     }
 
-    @NotNull
-    public static Moshi getMoshi() {
-        return new Moshi.Builder()
-                .add(new DurationAdapter())
-                .add(new LocalDateAdapter())
-                .add(new LocalDateTimeAdapter())
-                .build();
-    }
-
     @NotNull String getTheaterScheduleFormatted() {
-        var theaterSchedule = theaterService.getTheaterSchedule();
+        var theaterSchedule = theaterScheduleService.getTheaterSchedule();
 
-        return theaterScheduleFormatted(theaterSchedule);
+        return getPrettyFormattedSchedule(theaterSchedule);
     }
 
     @NotNull String getTheaterScheduleAsJson() {
-        var theaterSchedule = theaterService.getTheaterSchedule();
+        var theaterSchedule = theaterScheduleService.getTheaterSchedule();
 
         return moshi.adapter(TheaterSchedule.class).toJson(theaterSchedule);
     }
 
-    private @NotNull String theaterScheduleFormatted(@NotNull TheaterSchedule theaterSchedule) {
+    private @NotNull String getPrettyFormattedSchedule(@NotNull TheaterSchedule theaterSchedule) {
         StringBuilder builder = new StringBuilder()
                 .append(theaterSchedule.currentDate()).append(LINE_SEPARATOR)
                 .append("===================================================").append(LINE_SEPARATOR);
 
-        theaterSchedule.showDetails().forEach(showDetail -> builder.append(showDetail.index())
+        theaterSchedule.theaterShows().forEach(showDetail -> builder.append(showDetail.index())
                 .append(": ").append(showDetail.startTime())
                 .append(" ").append(showDetail.title())
                 .append(" ").append(humanReadableFormat(showDetail.runningTime()))
