@@ -1,9 +1,10 @@
 package com.jpmc.theater;
 
+import com.jpmc.theater.json.MoshiConfig;
 import com.jpmc.theater.service.CurrentDateProvider;
-import com.jpmc.theater.service.ShowDetail;
+import com.jpmc.theater.service.TheaterShow;
 import com.jpmc.theater.service.TheaterSchedule;
-import com.jpmc.theater.service.TheaterService;
+import com.jpmc.theater.service.TheaterScheduleService;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -49,7 +50,7 @@ class ApplicationTest {
         @Language("JSON") var expected = """
                 {
                   "currentDate": "20220522",
-                  "showDetails": [
+                  "theaterShows": [
                     {
                       "index": 1,
                       "startTime": "2022-05-22T09:00:00",
@@ -83,16 +84,16 @@ class ApplicationTest {
 
     @NotNull
     private Application setupApplication() {
-        return new Application(Application.getMoshi(), theaterServiceStub());
+        return new Application(MoshiConfig.getMoshi(), theaterServiceStub());
     }
 
     @NotNull
-    private TheaterService theaterServiceStub() {
+    private TheaterScheduleService theaterServiceStub() {
         LocalDateTime localDateTime = LocalDateTime.of(2022, Month.MAY, 22, 7, 0);
 
-        var turningRed = new ShowDetail(1, localDateTime.withHour(9).withMinute(0), "Turning Red", Duration.ofMinutes(85), 11, 10);
-        var spiderman = new ShowDetail(2, localDateTime.withHour(11).withMinute(0), "Spider-Man: No Way Home", Duration.ofMinutes(90), 12.5, 11);
-        var batman = new ShowDetail(3, localDateTime.withHour(12).withMinute(50), "The Batman", Duration.ofMinutes(95), 9, 9);
+        var turningRed = new TheaterShow(1, localDateTime.withHour(9).withMinute(0), "Turning Red", Duration.ofMinutes(85), 11, 10);
+        var spiderman = new TheaterShow(2, localDateTime.withHour(11).withMinute(0), "Spider-Man: No Way Home", Duration.ofMinutes(90), 12.5, 11);
+        var batman = new TheaterShow(3, localDateTime.withHour(12).withMinute(50), "The Batman", Duration.ofMinutes(95), 9, 9);
 
         TheaterSchedule theaterSchedule = new TheaterSchedule(localDateTime.toLocalDate(), List.of(turningRed, spiderman, batman));
 

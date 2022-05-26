@@ -3,60 +3,62 @@ package com.jpmc.theater.service;
 import com.jpmc.theater.model.Movie;
 import com.jpmc.theater.model.Showing;
 import com.jpmc.theater.model.Theater;
-import com.jpmc.theater.pricing.Discount;
+import com.jpmc.theater.pricing.DiscountType;
 import com.jpmc.theater.pricing.DiscountRule;
-import com.jpmc.theater.pricing.MovieDiscountRule;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.function.BiPredicate;
+import java.util.function.BiFunction;
 import java.util.stream.IntStream;
 
-public class TheaterServiceImpl implements TheaterService {
+public class TheaterScheduleServiceImpl implements TheaterScheduleService {
 
     final CurrentDateProvider currentDateProvider;
 
-    public TheaterServiceImpl(CurrentDateProvider currentDateProvider) {
+    public TheaterScheduleServiceImpl(CurrentDateProvider currentDateProvider) {
         this.currentDateProvider = currentDateProvider;
     }
 
     @Override
     public @NotNull TheaterSchedule getTheaterSchedule() {
         final @NotNull Theater theater = new Theater(getShowings(), getDiscountRules());
-        List<ShowDetail> showDetails = IntStream.range(0, theater.schedule().size())
+        List<TheaterShow> theaterShows = IntStream.range(0, theater.schedule().size())
                 .boxed()
                 .map(index -> {
                     var showing = theater.schedule().get(index);
-                    return new ShowDetail(index + 1,
+                    return new TheaterShow(index + 1,
                             showing.showStartTime(),
                             showing.movie().title(),
                             showing.movie().runningTime(),
                             showing.getMovieFee(),
-                            theater.calculateTicketPriceForSequence(index+1));
+                            theater.calculateTicketPriceForSequence(index + 1));
                 })
                 .toList();
 
-        return new TheaterSchedule(currentDateProvider.currentDate(), showDetails);
+        return new TheaterSchedule(currentDateProvider.currentDate(), theaterShows);
     }
 
-    @NotNull List<DiscountRule> getDiscountRules() {
-        final BiPredicate<Showing, Integer> specialMovieOne = (show, __) -> show.movie().specialCode() == 1;
-        BiPredicate<Showing, Integer> firstMoviePredicate = (__, sequence) -> sequence == 1;
-        BiPredicate<Showing, Integer> secondMoviePredicate = (__, sequence) -> sequence == 2;
-        BiPredicate<Showing, Integer> elevenAndFourPredicate = (show, __) -> show.showStartTime().getHour() >= 11 && show.showStartTime().getHour() <= 16;
-        BiPredicate<Showing, Integer> seventhOfMonthPredicate = (show, __) -> show.showStartTime().getDayOfMonth() == 7;
+    @NotNull List<BiFunction<Showing, Integer, Double>> getDiscountRules() {
+        var specialMovieDiscountRule = new DiscountRule((show, sequence) -> show.movie().specialCode() == 1,
+                DiscountType.ofPercentage(20));
+        var firstMovieDiscountRule = new DiscountRule((show, sequence) -> sequence == 1,
+                DiscountType.ofFixed(3));
+        var secondMovieDiscountRule = new DiscountRule((show, sequence) -> sequence == 2,
+                DiscountType.ofFixed(2));
+        var elevenAndFourthDiscountRule = new DiscountRule(
+                (show, sequence) -> show.showStartTime().getHour() >= 11 && show.showStartTime().getHour() <= 16,
+                DiscountType.ofPercentage(25));
+        var seventhOfMonthDiscountRule = new DiscountRule((show, sequence) -> show.showStartTime().getDayOfMonth() == 7,
+                DiscountType.ofFixed(1));
 
-        var specialMovieDiscount = new MovieDiscountRule(specialMovieOne, Discount.ofPercentage(20)) {
-        };
-        var firstMovieDiscount = new MovieDiscountRule(firstMoviePredicate, Discount.ofFixed(3));
-        var secondMovieDiscount = new MovieDiscountRule(secondMoviePredicate, Discount.ofFixed(2));
-        var elevenAndFourthDiscount = new MovieDiscountRule(elevenAndFourPredicate, Discount.ofPercentage(25));
-        var seventhOfMonthDiscount = new MovieDiscountRule(seventhOfMonthPredicate, Discount.ofFixed(1));
-
-        return List.of(specialMovieDiscount, firstMovieDiscount, secondMovieDiscount, elevenAndFourthDiscount, seventhOfMonthDiscount);
+        return List.of(specialMovieDiscountRule,
+                firstMovieDiscountRule,
+                secondMovieDiscountRule,
+                elevenAndFourthDiscountRule,
+                seventhOfMonthDiscountRule);
     }
 
 
@@ -76,5 +78,15 @@ public class TheaterServiceImpl implements TheaterService {
                 new Showing(theBatMan, LocalDateTime.of(currentDateProvider.currentDate(), LocalTime.of(23, 0)))
         );
     }
+
+
+    private static boolean isMovieBetweenElevenAndFour(Showing show, Integer sequence) {
+        return show.showStartTime().getHour() >= 11 && show.showStartTime().getHour() <= 16;
+    }
+
+    private static boolean isMovieInSeventhDayInMonth(Showing show, Integer sequence) {
+        return show.showStartTime().getDayOfMonth() == 7;
+    }
+
 
 }

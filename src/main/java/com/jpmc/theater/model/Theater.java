@@ -1,18 +1,18 @@
 package com.jpmc.theater.model;
 
-import com.jpmc.theater.pricing.DiscountRule;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.stream.IntStream;
 
-public record Theater(@NotNull List<@NotNull Showing> schedule, @NotNull List<? extends DiscountRule> discountRules) {
+public record Theater(@NotNull List<@NotNull Showing> schedule, @NotNull List<? extends BiFunction<Showing, Integer, Double>> discountRules) {
 
     public double calculateTicketPriceForSequence(int sequenceInDay) {
         var showing = getShowingForSequence(sequenceInDay);
 
         var discount = discountRules.stream()
-                .mapToDouble(r -> r.calculateTotalDiscount(showing, sequenceInDay))
+                .mapToDouble(r -> r.apply(showing, sequenceInDay))
                 .max()
                 .orElse(0.0);
 

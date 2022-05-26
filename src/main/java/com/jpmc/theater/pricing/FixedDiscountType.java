@@ -1,9 +1,9 @@
 package com.jpmc.theater.pricing;
 
-final public class FixedDiscount extends Discount {
+final class FixedDiscountType extends DiscountType {
     private final double fixedValue;
 
-    public FixedDiscount(double value) {
+    public FixedDiscountType(double value) {
         this.fixedValue = value;
     }
 

@@ -3,9 +3,8 @@ package com.jpmc.theater;
 import com.jpmc.theater.model.Movie;
 import com.jpmc.theater.model.Showing;
 import com.jpmc.theater.model.Theater;
-import com.jpmc.theater.pricing.Discount;
-import com.jpmc.theater.pricing.MovieDiscountRule;
-import com.jpmc.theater.service.TheaterServiceImpl;
+import com.jpmc.theater.pricing.DiscountType;
+import com.jpmc.theater.pricing.DiscountRule;
 import org.junit.jupiter.api.Test;
 
 import java.time.*;
@@ -13,16 +12,16 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TheaterServiceImplTest {
+public class TheaterScheduleServiceImplTest {
 
-    public static final MovieDiscountRule FIRST_DAY_MOVIE_DISCOUNT = new MovieDiscountRule((showing, sequence) -> sequence == 1,
-            Discount.ofFixed(2));
-    public static final MovieDiscountRule SPECIAL_MOVIE_DISCOUNT = new MovieDiscountRule((showing, sequence) -> sequence == 1,
-            Discount.ofPercentage(30));
+    public static final DiscountRule FIRST_DAY_MOVIE_DISCOUNT = new DiscountRule((showing, sequence) -> sequence == 1,
+            DiscountType.ofFixed(2));
+    public static final DiscountRule SPECIAL_MOVIE_DISCOUNT = new DiscountRule((showing, sequence) -> sequence == 1,
+            DiscountType.ofPercentage(30));
 
-    final static MovieDiscountRule SEVENTH_MOVIE_DISCOUNT = new MovieDiscountRule(
+    final static DiscountRule SEVENTH_MOVIE_DISCOUNT = new DiscountRule(
             (showing, sequence) -> showing.showStartTime().getDayOfMonth() == 7,
-            Discount.ofFixed(1));
+            DiscountType.ofFixed(1));
 
     @Test
     void shouldCalculateSeventhOfMonthMovieDiscountWhenMax() {

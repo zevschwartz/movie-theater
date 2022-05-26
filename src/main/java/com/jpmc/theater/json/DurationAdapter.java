@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 
-public class DurationAdapter {
+class DurationAdapter {
     @ToJson
     @NotNull
     String fromDuration(@NotNull Duration duration) {

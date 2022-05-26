@@ -2,7 +2,7 @@ package com.jpmc.theater;
 
 import com.jpmc.theater.service.CurrentDateProviderImpl;
 import com.jpmc.theater.service.TheaterSchedule;
-import com.jpmc.theater.service.TheaterServiceImpl;
+import com.jpmc.theater.service.TheaterScheduleServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DisplayName("Integrations Tests")
 class ApplicationIntegrationTest {
 
-    private final TheaterServiceImpl theaterService = new TheaterServiceImpl(CurrentDateProviderImpl.getInstance());
+    private final TheaterScheduleServiceImpl theaterService = new TheaterScheduleServiceImpl(CurrentDateProviderImpl.getInstance());
     private final TheaterSchedule theaterSchedule = theaterService.getTheaterSchedule();
 
     @Nested
@@ -21,7 +21,7 @@ class ApplicationIntegrationTest {
 
         @Test
         void checkSpiderManMovieSpecialPercentOffPrice() {
-            var showDetail = theaterSchedule.showDetails().get(7);
+            var showDetail = theaterSchedule.theaterShows().get(7);
 
             assertEquals("Spider-Man: No Way Home", showDetail.title());
 
@@ -31,7 +31,7 @@ class ApplicationIntegrationTest {
 
         @Test
         void checkSpiderManMovieElevenToFourPercentOffPrice() {
-            var showDetail = theaterSchedule.showDetails().get(1);
+            var showDetail = theaterSchedule.theaterShows().get(1);
 
             assertEquals("Spider-Man: No Way Home", showDetail.title());
 
@@ -41,7 +41,7 @@ class ApplicationIntegrationTest {
 
         @Test
         void checkFirstMovieDiscount() {
-            var showDetail = theaterSchedule.showDetails().get(0);
+            var showDetail = theaterSchedule.theaterShows().get(0);
 
             assertEquals("Turning Red", showDetail.title());
 
@@ -51,7 +51,7 @@ class ApplicationIntegrationTest {
 
         @Test
         void checkRegularPriceMovieNoDiscount() {
-            var showDetail = theaterSchedule.showDetails().get(5);
+            var showDetail = theaterSchedule.theaterShows().get(5);
 
             assertEquals("The Batman", showDetail.title());
 
